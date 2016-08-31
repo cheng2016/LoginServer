@@ -2,6 +2,7 @@ package com.heitian.ssm.factory;
 
 import com.auth0.jwt.JWTSigner;
 import com.auth0.jwt.JWTVerifier;
+import com.heitian.ssm.controller.UserController;
 import org.apache.log4j.Logger;
 
 import java.text.SimpleDateFormat;
@@ -20,7 +21,7 @@ public class TokenFactory {
     public final static String  REFRESH = "refresh";
     public final static String  CODE = "code";
 
-    private static Logger log = Logger.getLogger(TokenFactory.class);
+    private static Logger log = Logger.getLogger(UserController.class);
 
     private static SimpleDateFormat sdf= new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -42,7 +43,7 @@ public class TokenFactory {
         return jwt;
     }
 
-    public static String verifyToken(String token){
+    public static String getTokenId(String token){
         JWTVerifier verifier = new JWTVerifier(SECRET_KEY);
         try {
             Map<String, Object> claims = verifier.verify(token);
@@ -52,10 +53,8 @@ public class TokenFactory {
                 long end = (Long)claims.get("end");
 
                 if(end < System.currentTimeMillis()){
-                    log.info("验证码已过期");
                     return "验证码已过期";
                 }else if(!iss.equals(ISSUER)){
-                    log.info("证书有误");
                     return "证书有误";
                 }else {
                     return id;
@@ -67,8 +66,35 @@ public class TokenFactory {
         return "";
     }
 
+    public static boolean verifyToken(String token){
+        JWTVerifier verifier = new JWTVerifier(SECRET_KEY);
+        try {
+            Map<String, Object> claims = verifier.verify(token);
+            if(claims!=null ){
+                String id = (String) claims.get("id");
+                String iss = (String) claims.get("iss");
+                long end = (Long)claims.get("end");
+
+                if(end < System.currentTimeMillis()){
+                    log.error("token已过期！");
+                    return false;
+                }else if(!iss.equals(ISSUER)){
+                    log.error("证书有误！");
+                    return false;
+                }else if(id == null || id.equals("")){
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static String  generatorSmsToken(String phone,String code){
-        long effectiveTime = 1 * 2 * 60 * 1000;//有效时间为二分钟
+        long effectiveTime = 1 * 3 * 60 * 1000;//有效时间为三分钟
         long start = System.currentTimeMillis(); //start time
         long end = start + effectiveTime; // expires claim. In this case the token expires in 600 seconds
 
@@ -101,19 +127,19 @@ public class TokenFactory {
                 log.info("verifySmsToken："+iss+"-----"+start+"------"+sdf.format(new Date(end))+"-----"+phone+"-----"+code+"----"+type);
 
                 if(end < System.currentTimeMillis()){
-                    log.info("验证码已过期");
+                    log.error("验证码已过期");
                     return "验证码已过期";
                 }else if(!iss.equals(ISSUER)){
-                    log.info("证书有误");
+                    log.error("证书有误");
                     return "证书有误";
                 }else if(!type.equals(CODE)){
-                    log.info("类型有误");
+                    log.error("类型有误");
                     return "类型有误";
                 }else if(!phone.equals(phoneParam)){
-                    log.info("手机号有误");
+                    log.error("手机号有误");
                     return "手机号有误";
                 }else if(!code.equals(codeParam)){
-                    log.info("验证码有误");
+                    log.error("验证码有误");
                     return "验证码有误";
                 }else{
                     return "success";

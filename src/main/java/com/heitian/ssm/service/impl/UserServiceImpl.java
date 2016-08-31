@@ -1,13 +1,16 @@
 package com.heitian.ssm.service.impl;
 
 import com.heitian.ssm.dao.UserDao;
-import com.heitian.ssm.model.User;
-import com.heitian.ssm.model.LoginRequest;
+import com.heitian.ssm.model.request.RegistRequest;
+import com.heitian.ssm.model.request.UpdateRequest;
+import com.heitian.ssm.model.response.User;
+import com.heitian.ssm.model.request.LoginRequest;
 import com.heitian.ssm.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,11 +44,19 @@ public class UserServiceImpl implements UserService {
         return userDao.login(loginRequest);
     }
 
-    public int update(LoginRequest loginRequest) {
-        return userDao.update(loginRequest);
+    public int update(UpdateRequest updateRequest) {
+        return userDao.update(updateRequest);
     }
 
-    public int regist(LoginRequest loginRequest) {
-        return userDao.regist(loginRequest);
+    public int regist(RegistRequest registRequest) {
+        return userDao.regist(registRequest);
+    }
+
+    public User selectByUserName(String name){
+        return userDao.selectByUserName(name);
+    }
+
+    public int insertByUserName(String name, Date createTime){
+        return userDao.insertByUserName(name,createTime);
     }
 }

@@ -61,8 +61,7 @@ public class URLUtil {
         try {
             url = new URL(urlStr);
             urlConnection = (HttpURLConnection) url.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String str = null;
             while ((str = in.readLine()) != null) {
                 inputLine += str;

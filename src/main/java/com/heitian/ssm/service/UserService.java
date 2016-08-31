@@ -1,8 +1,11 @@
 package com.heitian.ssm.service;
 
-import com.heitian.ssm.model.User;
-import com.heitian.ssm.model.LoginRequest;
+import com.heitian.ssm.model.request.RegistRequest;
+import com.heitian.ssm.model.request.UpdateRequest;
+import com.heitian.ssm.model.response.User;
+import com.heitian.ssm.model.request.LoginRequest;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,7 +23,11 @@ public interface UserService {
 
     User login(LoginRequest loginRequest);
 
-    int update(LoginRequest loginRequest);
+    int update(UpdateRequest updateRequest);
 
-    int regist(LoginRequest loginRequest);
+    int regist(RegistRequest registRequest);
+
+    User selectByUserName(String name);
+
+    int insertByUserName(String name, Date createTime);
 }

@@ -1,11 +1,14 @@
 package com.heitian.ssm.dao;
 
-import com.heitian.ssm.model.User;
-import com.heitian.ssm.model.LoginRequest;
+import com.heitian.ssm.model.request.RegistRequest;
+import com.heitian.ssm.model.request.UpdateRequest;
+import com.heitian.ssm.model.response.User;
+import com.heitian.ssm.model.request.LoginRequest;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,7 +28,11 @@ public interface UserDao {
 
     User login(@RequestBody LoginRequest loginRequest);
 
-    int update(@RequestBody LoginRequest loginRequest);
+    int update(@RequestBody UpdateRequest updateRequest);
 
-    int regist(@RequestBody LoginRequest loginRequest);
+    int regist(@RequestBody RegistRequest registRequest);
+
+    User selectByUserName(@Param("name") String name);
+
+    int insertByUserName(@Param("name") String name,@Param("createTime") Date createTime);
 }
